@@ -1,0 +1,30 @@
+.chirp-container {
+  border: 1px solid black;
+  margin: 10px;
+  width: 20em;
+}
+
+.author-info {
+  display: flex;
+  border-bottom: 1px solid black;
+}
+
+.author-name, .chirp-author, .chirp-text {
+  margin: 2px 10px;
+}
+
+.chirp-text {
+  display: flex;
+  flex-direction: column;
+  font-style: italic;
+  margin: 15px 25px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  margin: 10px;
+}

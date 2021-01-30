@@ -18,23 +18,29 @@ const Chirps = () => {
   }
 
   const makeChirpList = () => {
-    return data.chirps.map(chirp => {
-      return (
-        <Chirp
-          key={chirp.id}
-          id={chirp.id}
-          text={chirp.text}
-        />
-      )
-    })
+    if (!data.chirps.length) {
+      return (<p>You have no chirps!</p>)
+    } else {
+      return data.chirps.map(chirp => {
+        return (
+          <Chirp
+            key={chirp.id}
+            id={chirp.id}
+            text={chirp.text}
+            author={chirp.author}
+            created_at={chirp.created_at}
+          />
+        )
+      })
+    }
   }
 
   return (
-    <div>
+    <div className="chirps-container">
       <h1>Chirps</h1>
-      <ul className="chirps-list">
+      <div className="chirps-list">
         {makeChirpList()}
-      </ul>
+      </div>
     </div>
   )
 }

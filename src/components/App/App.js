@@ -1,16 +1,18 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
 import Chirps from '../Chirps/Chirps'
+import Form from '../Form/Form'
 
 import './App.css'
 
 const App = () => {
   return (
-    <div className="app">
-      <Route exact path='/' render={() => (
+    <Route exact path="/index" render={() => (
+      <div className="app">
+        <Form />
         <Chirps />
-      )} />
-    </div>
+     </div>
+    )} />
   )
 }
 
