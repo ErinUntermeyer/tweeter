@@ -27,8 +27,6 @@ const Chirps = () => {
             key={chirp.id}
             id={chirp.id}
             text={chirp.text}
-            author={chirp.author}
-            created_at={chirp.created_at}
           />
         )
       })

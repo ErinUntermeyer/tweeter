@@ -16,7 +16,6 @@ const Form = () => {
     }
     addChirp({
       variables: { text: chirp.text, author: chirp.author },
-      optimisticResponse: true,
       update: (cache, { data }) => {
         const existingChirps = cache.readQuery({
           query: GET_CHIRPS
@@ -24,19 +23,19 @@ const Form = () => {
         const newChirp = data.insert_chirps.returning[0]
         cache.writeQuery({
           query: GET_CHIRPS,
-          data: { chirps: [...existingChirps.chirps, newChirp]}
+          data: { chirps: [...existingChirps.chirps, newChirp] }
         })
       },
       onCompleted: setChirp({ text: "", author: "" })
     })
   }
 
-  const [ addChirp ] = useMutation(ADD_CHIRP)
+  const [addChirp] = useMutation(ADD_CHIRP)
 
   return (
     <div className="form-container">
       <h1>New Chirp</h1>
-      <form 
+      <form
         onSubmit={(e) => handleSubmit(e)}
         className="new-chirp-form"
       >
@@ -47,7 +46,8 @@ const Form = () => {
           value={chirp.author}
           onChange={(e) => {
             setError("")
-            setChirp({ ...chirp, author: e.target.value})}
+            setChirp({ ...chirp, author: e.target.value })
+          }
           }
         ></input>
         <label htmlFor="text">Chirp:</label>
@@ -58,8 +58,8 @@ const Form = () => {
           value={chirp.text}
           onChange={(e) => {
             setError("")
-            setChirp({ ...chirp, text: e.target.value })}
-          }
+            setChirp({ ...chirp, text: e.target.value })
+          }}
         ></textarea>
         <p className="char-total">{`${chirp.text.length} / 140`}</p>
         <button type="submit">Submit</button>

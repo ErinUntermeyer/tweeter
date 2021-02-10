@@ -6,7 +6,6 @@ export const GET_CHIRPS = gql`
       id
       text
       author
-      created_at
     }
   }
 `

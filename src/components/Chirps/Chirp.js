@@ -1,19 +1,35 @@
 import React, { useState } from 'react'
 import { useMutation } from '@apollo/client'
-import { GET_CHIRPS } from '../../graphql/queries/index'
-import { UPDATE_CHIRP, DELETE_CHIRP } from '../../graphql/mutations/index'
+import { DELETE_CHIRP, EDIT_CHIRP } from '../../graphql/mutations/index'
 
 import './Chirp.css'
+import { GET_CHIRPS } from '../../graphql/queries'
 
-const Chirp = ({ id, text, author, created_at }) => {
+const Chirp = ({ id, text }) => {
   const [ editMode, setEditMode ] = useState(false)
+  let input
 
-  let inputText
+  const handleDelete = (e) => {
+    deleteChirp({
+      variables: { id: id },
+      update: (cache) => {
+        cache.modify({
+          fields: {
+            chirps(butt, { readField }) {
+              return butt.filter(chirp => id !== readField('id', chirp))
+            }
+          }
+        })
+      }
+    })
+  }
+
+  const [ deleteChirp ] = useMutation(DELETE_CHIRP)
 
   const handleEdit = (e, input) => {
     e.preventDefault()
-    updateChirp({
-      variables: { id: id, text: input},
+    editChirp({
+      variables: { id: id, text: input },
       optimisticResponse: true,
       update: (cache) => {
         const existingChirps = cache.readQuery({
@@ -35,58 +51,36 @@ const Chirp = ({ id, text, author, created_at }) => {
     })
   }
 
-  const [ updateChirp ] = useMutation(UPDATE_CHIRP)
+  const [ editChirp ] = useMutation(EDIT_CHIRP)
 
-  const handleDelete = (e) => {
-    deleteChirp({
-      variables: { id: id },
-      optimisticResponse: true,
-      update: (cache) => {
-        cache.modify({
-          fields: {
-            chirps(existingChirps, { readField }) {
-              return existingChirps.filter(chirp => readField('id', chirp) !== id)
-            }
-          }
-        })
-      }
-    })
-  }
-
-  const [ deleteChirp ] = useMutation(DELETE_CHIRP)
-  
   return (
     <article className="chirp-container" key={id}>
-      <div className="author-info">
-        <p className="author-name">{author} says:</p>
-      </div>
+      <p className="chirp-text">{text}</p>
+      <button
+        onClick={(e) => handleDelete(e)}
+      >
+        delete
+      </button>
+      <button
+        onClick={(e) => {
+          return !editMode ? setEditMode(true) : setEditMode(false)
+        }}
+      >
+        edit
+      </button>
 
-      { !editMode ?
-        <p className="chirp-text">{text}</p> :
-        <div className="chirp-text">
-          <label htmlFor="edit-chirp"></label>
-          <textarea
-            id="edit-chirp"
-            placeholder="Edit chirp here!"
-            maxLength="140"
+      { editMode && 
+        <>
+          <input
             ref={node => {
-              inputText = node
+              input = node
             }}
-          ></textarea>
+          ></input>
           <button
-            onClick={(e) => handleEdit(e, inputText.value)}
-          >Change!</button>
-        </div>
+          onClick={(e) => handleEdit(e, input.value)}
+          >submit edit</button>
+        </>
       }
-
-      <div className="buttons">
-        <button
-          onClick={(e) => !editMode ? setEditMode(true) : setEditMode(false)}
-        >
-          Edit
-        </button>
-        <button onClick={(e) => handleDelete(e)}>Delete</button>
-      </div>
     </article>
   )
 }
